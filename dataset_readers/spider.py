@@ -2,7 +2,7 @@ import json
 import logging
 import os
 from typing import List, Dict
-
+import ipdb
 import dill
 from allennlp.common.checks import ConfigurationError
 from allennlp.data import DatasetReader, Tokenizer, TokenIndexer, Field, Instance
@@ -105,7 +105,7 @@ class SpiderDatasetReader(DatasetReader):
                         # there are two examples in the train set that are wrongly formatted, skip them
                         print(f"error with {ex['query']}")
                         print(e)
-
+                ipdb.set_trace()
                 ins = self.text_to_instance(
                     utterance=ex['question'],
                     db_id=ex['db_id'],
