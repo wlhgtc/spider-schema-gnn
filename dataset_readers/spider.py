@@ -105,7 +105,7 @@ class SpiderDatasetReader(DatasetReader):
                         # there are two examples in the train set that are wrongly formatted, skip them
                         print(f"error with {ex['query']}")
                         print(e)
-                ipdb.set_trace()
+                
                 ins = self.text_to_instance(
                     utterance=ex['question'],
                     db_id=ex['db_id'],
@@ -132,8 +132,9 @@ class SpiderDatasetReader(DatasetReader):
                                                 entity_tokens=db_context.entity_tokens,
                                                 include_in_vocab=False,  # TODO: self._use_table_for_vocab,
                                                 max_table_tokens=None)  # self._max_table_tokens)
-
+        
         world = SpiderWorld(db_context, query=sql)
+        ipdb.set_trace()
         fields["utterance"] = TextField(db_context.tokenized_utterance, self._utterance_token_indexers)
 
         action_sequence, all_actions = world.get_action_sequence_and_all_actions()

@@ -26,6 +26,7 @@ class SpiderWorld:
 
         # keep a list of entities names as they are given in sql queries
         self.entities_names = {}
+        ipdb.set_trace()
         for i, entity in enumerate(self.db_context.knowledge_graph.entities):
             parts = entity.split(':')
             if parts[0] in ['table', 'string']:
