@@ -1,6 +1,6 @@
 from typing import List, Tuple, Dict, Set, Optional
 from copy import deepcopy
-
+import ipdb
 from parsimonious import Grammar
 from parsimonious.exceptions import ParseError
 
@@ -26,7 +26,6 @@ class SpiderWorld:
 
         # keep a list of entities names as they are given in sql queries
         self.entities_names = {}
-        ipdb.set_trace()
         for i, entity in enumerate(self.db_context.knowledge_graph.entities):
             parts = entity.split(':')
             if parts[0] in ['table', 'string']:
@@ -44,7 +43,6 @@ class SpiderWorld:
             update_grammar_to_be_table_names_free(grammar_with_context)
 
         schema = self.db_context.schema
-
         update_grammar_with_tables(grammar_with_context, schema)
         grammar = Grammar(format_grammar_string(grammar_with_context))
 
@@ -55,7 +53,6 @@ class SpiderWorld:
         sorted_actions = sorted(all_actions)
         self.valid_actions = valid_actions
         self.valid_actions_flat = sorted_actions
-
         action_sequence = None
         if self.query is not None:
             sql_visitor = SqlVisitor(grammar)

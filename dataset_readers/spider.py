@@ -134,11 +134,9 @@ class SpiderDatasetReader(DatasetReader):
                                                 max_table_tokens=None)  # self._max_table_tokens)
         
         world = SpiderWorld(db_context, query=sql)
-        ipdb.set_trace()
         fields["utterance"] = TextField(db_context.tokenized_utterance, self._utterance_token_indexers)
 
         action_sequence, all_actions = world.get_action_sequence_and_all_actions()
-
         if action_sequence is None and self._keep_if_unparsable:
             # print("Parse error")
             action_sequence = []
@@ -155,7 +153,7 @@ class SpiderDatasetReader(DatasetReader):
                                         world.is_global_rule(rhs),
                                         nonterminal=nonterminal)
             production_rule_fields.append(field)
-
+            
         valid_actions_field = ListField(production_rule_fields)
         fields["valid_actions"] = valid_actions_field
 
@@ -166,7 +164,6 @@ class SpiderDatasetReader(DatasetReader):
             index_fields.append(IndexField(action_map[production_rule], valid_actions_field))
         if not action_sequence:
             index_fields = [IndexField(-1, valid_actions_field)]
-
         action_sequence_field = ListField(index_fields)
         fields["action_sequence"] = action_sequence_field
         fields["world"] = MetadataField(world)

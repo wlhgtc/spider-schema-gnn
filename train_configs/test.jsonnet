@@ -8,9 +8,7 @@
     "dataset_path": "./dataset/database",
     "lazy": false,
     "keep_if_unparsable": false,
-    "loading_limit": -1,
-    "load_cache":true,
-    "save_cache":false
+    "loading_limit": -1
   },
   "validation_dataset_reader": {
     "type": "spider",

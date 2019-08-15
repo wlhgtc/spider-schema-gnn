@@ -32,6 +32,7 @@ from state_machines.transition_functions.attend_past_schema_items_transition imp
     AttendPastSchemaItemsTransitionFunction
 from state_machines.transition_functions.linking_transition_function import LinkingTransitionFunction
 
+import ipdb
 
 @Model.register("spider")
 class SpiderParser(Model):
@@ -173,7 +174,7 @@ class SpiderParser(Model):
             action_mask = action_sequence != self._action_padding_index
         else:
             action_mask = None
-
+        
         if self.training:
             decode_output = self._decoder_trainer.decode(initial_state,
                                                          self._transition_function,
@@ -221,7 +222,6 @@ class SpiderParser(Model):
         schema_text = schema['text']
         embedded_schema = self._question_embedder(schema_text, num_wrapping_dims=1)
         schema_mask = util.get_text_field_mask(schema_text, num_wrapping_dims=1).float()
-
         embedded_utterance = self._question_embedder(utterance)
         utterance_mask = util.get_text_field_mask(utterance).float()
 
@@ -234,9 +234,11 @@ class SpiderParser(Model):
         # entity_type_dict: Dict[int, int], mapping flattened_entity_index -> type_index
         # These encode the same information, but for efficiency reasons later it's nice
         # to have one version as a tensor and one that's accessible on the cpu.
+
+        
         entity_types, entity_type_dict = self._get_type_vector(worlds, num_entities, embedded_schema.device)
 
-        entity_type_embeddings = self._entity_type_encoder_embedding(entity_types)
+        entity_type_embeddings = self._entity_type_encoder_embedding(entity_types) #(batch,num_entities,embed_dim)
 
         # Compute entity and question word similarity.  We tried using cosine distance here, but
         # because this similarity is the main mechanism that the model can use to push apart logit
@@ -266,7 +268,6 @@ class SpiderParser(Model):
         # (batch_size, num_question_tokens, num_entities)
         linking_probabilities = self._get_linking_probabilities(worlds, linking_scores.transpose(1, 2),
                                                                 utterance_mask, entity_type_dict)
-
         # (batch_size, num_entities, num_neighbors) or None
         neighbor_indices = self._get_neighbor_indices(worlds, num_entities, linking_scores.device)
 
@@ -300,12 +301,10 @@ class SpiderParser(Model):
 
         # (batch_size, utterance_length, encoder_output_dim)
         encoder_outputs = self._dropout(self._encoder(encoder_input, utterance_mask))
-
         max_entities_relevance = linking_probabilities.max(dim=1)[0]
         entities_relevance = max_entities_relevance.unsqueeze(-1).detach()
 
-        graph_initial_embedding = entity_type_embeddings * entities_relevance
-
+        graph_initial_embedding = entity_type_embeddings * entities_relevance  # h_v
         encoder_output_dim = self._encoder.get_output_dim()
         if self._gnn:
             entities_graph_encoding = self._get_schema_graph_encoding(worlds,
@@ -319,12 +318,14 @@ class SpiderParser(Model):
         else:
             entities_graph_encoding = None
 
+        ipdb.set_trace()
         if self._self_attend:
             # linked_actions_linking_scores = self._get_linked_actions_linking_scores(actions, entities_graph_encoding)
             entities_ff = self._ent2ent_ff(entities_graph_encoding)
             linked_actions_linking_scores = torch.bmm(entities_ff, entities_ff.transpose(1, 2))
         else:
             linked_actions_linking_scores = [None] * batch_size
+
 
         # This will be our initial hidden state and memory cell for the decoder LSTM.
         final_encoder_output = util.get_final_encoder_states(encoder_outputs,
@@ -432,7 +433,6 @@ class SpiderParser(Model):
         batch_size = initial_graph_embeddings.size(0)
 
         graph_data_list = []
-
         for batch_index, world in enumerate(worlds):
             x = initial_graph_embeddings[batch_index]
 
@@ -444,7 +444,6 @@ class SpiderParser(Model):
             graph_data_list.append(graph_data)
 
         batch = Batch.from_data_list(graph_data_list)
-
         gnn_output = self._gnn(batch.x, [batch[f'edge_index_{i}'] for i in range(self._gnn.num_edge_types)])
 
         num_nodes = max_num_entities
@@ -655,7 +654,6 @@ class SpiderParser(Model):
                 # We used index 0 for the null entity, so this will actually have some values in it.
                 # But we want the null entity's score to be 0, so we set that here.
                 entity_scores[:, 0] = 0
-
                 # No need for a mask here, as this is done per batch instance, with no padding.
                 type_probabilities = torch.nn.functional.softmax(entity_scores, dim=1)
                 all_probabilities.append(type_probabilities[:, 1:])

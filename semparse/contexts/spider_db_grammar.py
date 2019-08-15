@@ -6,7 +6,7 @@ for the any of the text2sql datasets, with the grammar and the valid actions.
 from typing import List, Dict
 
 from dataset_readers.dataset_util.spider_utils import Table
-
+import ipdb
 
 GRAMMAR_DICTIONARY = {}
 GRAMMAR_DICTIONARY["statement"] = ['(query ws iue ws query)', '(query ws)']

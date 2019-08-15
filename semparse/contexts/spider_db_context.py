@@ -1,4 +1,5 @@
 import re
+import ipdb
 from collections import Set, defaultdict
 from typing import Dict, Tuple, List
 
@@ -86,6 +87,7 @@ class SpiderDBContext:
                         column_key = self.entity_key_for_column(table.name, column)
                         string_column_mapping[cell_value_normalized].add(column_key)
 
+        # map token in question with values in database
         string_entities = self.get_entities_from_question(string_column_mapping)
 
         for table in tables:
@@ -99,14 +101,12 @@ class SpiderDBContext:
                 neighbors[entity_key].add(table_key)
                 neighbors[table_key].add(entity_key)
                 entity_text[entity_key] = column.text
-
         for string_entity, column_keys in string_entities:
             entities.add(string_entity)
             for column_key in column_keys:
                 neighbors[string_entity].add(column_key)
                 neighbors[column_key].add(string_entity)
             entity_text[string_entity] = string_entity.replace("string:", "").replace("_", " ")
-
         # loop again after we have gone through all columns to link foreign keys columns
         for table_name in db_schema.keys():
             for column in db_schema[table_name].columns:
@@ -123,9 +123,8 @@ class SpiderDBContext:
 
                 neighbors[entity_key].add(other_entity_key)
                 neighbors[other_entity_key].add(entity_key)
-
                 foreign_keys_to_column[entity_key] = other_entity_key
-
+                
         kg = KnowledgeGraph(entities, dict(neighbors), entity_text)
         kg.foreign_keys_to_column = foreign_keys_to_column
 
