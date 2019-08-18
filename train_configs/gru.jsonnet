@@ -28,7 +28,7 @@
     "gnn_timesteps": 2,
     "decoder_self_attend": true,
     "decoder_use_graph_entities": true,
-    "use_neighbor_similarity_for_linking": false,
+    "use_neighbor_similarity_for_linking": true,
     "question_embedder": {
       "tokens": {
         "type": "embedding",
@@ -38,7 +38,7 @@
     },
     "action_embedding_dim": 200,
     "encoder": {
-      "type": "lstm",
+      "type": "gru",
       "input_size": 400,
       "hidden_size": 200,
       "bidirectional": true,

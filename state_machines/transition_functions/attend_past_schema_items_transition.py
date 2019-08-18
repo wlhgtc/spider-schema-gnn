@@ -1,6 +1,6 @@
 from collections import defaultdict
 from typing import Dict, Tuple, List, Set, Any, Callable, Optional
-
+import ipdb
 import torch
 from allennlp.modules import Attention, FeedForward
 from allennlp.nn import Activation, util
@@ -175,14 +175,12 @@ class AttendPastSchemaItemsTransitionFunction(BasicTransitionFunction):
             current_log_probs = None
             linked_action_logits_encoder = None
             linked_action_ent2ent_logits = None
-
             if 'global' in instance_actions:
                 action_embeddings, output_action_embeddings, embedded_actions = instance_actions['global']
                 # This is just a matrix product between a (num_actions, embedding_dim) matrix and an
                 # (embedding_dim, 1) matrix.
                 embedded_action_logits = action_embeddings.mm(predicted_action_embedding.unsqueeze(-1)).squeeze(-1)
                 action_ids = embedded_actions
-
             if 'linked' in instance_actions:
                 linking_scores, type_embeddings, linked_actions, entity_action_linking_scores = instance_actions['linked']
                 action_ids = embedded_actions + linked_actions

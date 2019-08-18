@@ -28,7 +28,7 @@
     "gnn_timesteps": 2,
     "decoder_self_attend": true,
     "decoder_use_graph_entities": true,
-    "use_neighbor_similarity_for_linking": false,
+    "use_neighbor_similarity_for_linking": true,
     "question_embedder": {
       "tokens": {
         "type": "embedding",
@@ -56,7 +56,7 @@
     "max_decoding_steps": 100,
     "input_attention": {"type": "dot_product"},
     "past_attention": {"type": "dot_product"},
-    "dropout": 0.5
+    "dropout": 0.7
   },
   "iterator": {
     "type": "basic",

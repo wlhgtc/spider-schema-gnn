@@ -28,7 +28,7 @@
     "gnn_timesteps": 2,
     "decoder_self_attend": true,
     "decoder_use_graph_entities": true,
-    "use_neighbor_similarity_for_linking": false,
+    "use_neighbor_similarity_for_linking": true,
     "question_embedder": {
       "tokens": {
         "type": "embedding",
@@ -73,7 +73,7 @@
     "validation_metric": "+sql_match",
     "optimizer": {
       "type": "adam",
-      "lr": 0.001
+      "lr": 0.0005
     },
     "num_serialized_models_to_keep": 2
   }

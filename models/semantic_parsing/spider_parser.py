@@ -303,8 +303,7 @@ class SpiderParser(Model):
         encoder_outputs = self._dropout(self._encoder(encoder_input, utterance_mask))
         max_entities_relevance = linking_probabilities.max(dim=1)[0]
         entities_relevance = max_entities_relevance.unsqueeze(-1).detach()
-
-        graph_initial_embedding = entity_type_embeddings * entities_relevance  # h_v
+        graph_initial_embedding = entity_type_embeddings * entities_relevance
         encoder_output_dim = self._encoder.get_output_dim()
         if self._gnn:
             entities_graph_encoding = self._get_schema_graph_encoding(worlds,
@@ -318,7 +317,6 @@ class SpiderParser(Model):
         else:
             entities_graph_encoding = None
 
-        ipdb.set_trace()
         if self._self_attend:
             # linked_actions_linking_scores = self._get_linked_actions_linking_scores(actions, entities_graph_encoding)
             entities_ff = self._ent2ent_ff(entities_graph_encoding)

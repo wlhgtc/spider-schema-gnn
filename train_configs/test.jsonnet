@@ -68,7 +68,7 @@
   },
   "trainer": {
     "num_epochs": 100,
-    "cuda_device": 0,
+    "cuda_device": 1,
     "patience": 20,
     "validation_metric": "+sql_match",
     "optimizer": {
