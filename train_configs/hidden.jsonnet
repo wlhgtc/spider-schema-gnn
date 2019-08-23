@@ -38,9 +38,9 @@
     },
     "action_embedding_dim": 200,
     "encoder": {
-      "type": "lstm",
+      "type": "gru",
       "input_size": 400,
-      "hidden_size": 200,
+      "hidden_size": 400,
       "bidirectional": true,
       "num_layers": 1
     },

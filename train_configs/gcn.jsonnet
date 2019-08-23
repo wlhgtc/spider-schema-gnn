@@ -25,7 +25,7 @@
     "dataset_path": "./dataset",
     "parse_sql_on_decoding": true,
     "gnn": true,
-    "gnn_timesteps": 2,
+    "gnn_timesteps": 3,
     "decoder_self_attend": true,
     "decoder_use_graph_entities": true,
     "use_neighbor_similarity_for_linking": true,

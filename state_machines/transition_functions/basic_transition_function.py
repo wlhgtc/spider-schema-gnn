@@ -345,7 +345,6 @@ class BasicTransitionFunction(TransitionFunction[GrammarBasedState]):
         start_action_logits = self._start_type_predictor(hidden_state)
         log_probs = torch.nn.functional.log_softmax(start_action_logits, dim=-1)
         sorted_log_probs, sorted_actions = log_probs.sort(dim=-1, descending=True)
-
         sorted_actions = sorted_actions.detach().cpu().numpy().tolist()
         if state.debug_info is not None:
             probs_cpu = log_probs.exp().detach().cpu().numpy().tolist()

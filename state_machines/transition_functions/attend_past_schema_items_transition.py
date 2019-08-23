@@ -218,6 +218,7 @@ class AttendPastSchemaItemsTransitionFunction(BasicTransitionFunction):
                     action_logits = torch.cat([embedded_action_logits, linked_action_logits], dim=-1)
                 else:
                     action_logits = linked_action_logits
+                
                 current_log_probs = torch.nn.functional.log_softmax(action_logits, dim=-1)
             elif not instance_actions:
                 action_ids = None
@@ -225,7 +226,6 @@ class AttendPastSchemaItemsTransitionFunction(BasicTransitionFunction):
             else:
                 action_logits = embedded_action_logits
                 current_log_probs = torch.nn.functional.log_softmax(action_logits, dim=-1)
-
             # This is now the total score for each state after taking each action.  We're going to
             # sort by this later, so it's important that this is the total score, not just the
             # score for the current action.

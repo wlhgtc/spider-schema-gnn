@@ -73,7 +73,8 @@
     "validation_metric": "+sql_match",
     "optimizer": {
       "type": "adam",
-      "lr": 0.001
+      "lr": 0.001 ,
+      "weight_decay": 5e-4
     },
     "num_serialized_models_to_keep": 2
   }
